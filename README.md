@@ -6,33 +6,26 @@ Este projeto simula um sistema de logística com pontos de redistribuição (cen
 Funcionalidades
 Gerenciamento de pacotes e rastreamento por logs.
 Sincronização de recursos compartilhados com threading.Lock.
-Caminhões circulam entre CDs, carregando e descarregando pacotes.
+Caminhões circulam entre Centro de distribuição, carregando e descarregando pacotes.
 Logs de rastreamento salvos em arquivos para cada pacote.
 
+
 Como executar
-Certifique-se de que possui o Python 3.8 ou superior instalado.
+certifiquese de que possui o Python 3.8 ou superior instalado.
 
-Clone este repositório:
-git clone <URL_do_repositorio>
+Clone este repositório: git clone <URL_do_repositorio>
 
-
-Execute o script com os seguintes parâmetros:
-python logistics_system.py <S> <C> <P> <A>
+Execute o scrip com os seguintes parâmetros: python nome_do_arquivo.py <S> <C> <P> <A>
 
 Onde:
-S: Número de centros de distribuição (CDs).
-C: Número de caminhões.
-P: Número de pacotes.
-A: Capacidade máxima de pacotes por caminhão.
+S: Número de centros de sitribuição
+C: Número de caminhões
+P: Número de pacotes
+A: Capacidade máxima de pacotes por caminhão
 
-Exemplo:
-python logistics_system.py 5 3 50 10
-
+Exemplo: Python nome_do_arquivo.py 5 3 50 10
 Este comando cria:
-5 CDs,
-3 caminhões,
-50 pacotes,
-Capacidade máxima de 10 pacotes por caminhão.
+5 centros de distribuição, 3 caminhões, 50 pacotes, capacidade máxima de 10 pacotes por caminhão.
 
 Logs de Rastreamento
-Os logs de cada pacote são salvos na pasta tracking/ criada automaticamente na execução. Cada arquivo contém o histórico completo do pacote.
+Os log de cada pacote são salvos na pasta tracking criada automaticamento na execução. Cada arquivo contém o histórico completo do pacote.

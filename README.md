@@ -15,7 +15,7 @@ certifiquese de que possui o Python 3.8 ou superior instalado.
 
 Clone este repositório: git clone <URL_do_repositorio>
 
-Execute o script com os seguintes parâmetros: python nome_do_arquivo.py <S> <C> <P> <A>
+Execute o script com os seguintes parâmetros: python nome_do_arquivo.py [S] [C] [P] [A]
 
 Onde:  
 S: Número de centros de sitribuição.  

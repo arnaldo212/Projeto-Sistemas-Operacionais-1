@@ -17,11 +17,11 @@ Clone este repositório: git clone <URL_do_repositorio>
 
 Execute o script com os seguintes parâmetros: python nome_do_arquivo.py <S> <C> <P> <A>
 
-Onde:
-S: Número de centros de sitribuição.
-C: Número de caminhões.
-P: Número de pacotes.
-A: Capacidade máxima de pacotes por caminhão.
+Onde:  
+S: Número de centros de sitribuição.  
+C: Número de caminhões.  
+P: Número de pacotes.  
+A: Capacidade máxima de pacotes por caminhão.  
 
 Exemplo: Python nome_do_arquivo.py 5 3 50 10
 Este comando cria:

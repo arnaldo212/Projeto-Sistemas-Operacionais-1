@@ -23,8 +23,8 @@ C: Número de caminhões.
 P: Número de pacotes.  
 A: Capacidade máxima de pacotes por caminhão.  
 
-Exemplo: Python nome_do_arquivo.py 5 3 50 10
-Este comando cria:
+Exemplo: Python nome_do_arquivo.py 5 3 50 10  
+Este comando cria:  
 5 centros de distribuição, 3 caminhões, 50 pacotes, capacidade máxima de 10 pacotes por caminhão.
 
 Logs de Rastreamento

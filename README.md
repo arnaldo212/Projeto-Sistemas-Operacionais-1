@@ -21,7 +21,7 @@ C: Número de caminhões.
 P: Número de pacotes.  
 A: Capacidade máxima de pacotes por caminhão.  
 
-Exemplo: Python project.py 5 3 50 10  
+Exemplo: python project.py 5 3 50 10  
 Este comando cria:  
 5 centros de distribuição, 3 caminhões, 50 pacotes, capacidade máxima de 10 pacotes por caminhão.
 

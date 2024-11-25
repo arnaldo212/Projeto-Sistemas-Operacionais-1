@@ -13,7 +13,7 @@ Logs de rastreamento salvos em arquivos para cada pacote.
 Como executar
 certifique-se de que possui o Python 3.8 ou superior instalado.
 
-Execute o script com os seguintes parâmetros: python project.py [S] [C] [P] [A]
+Execute o script com os seguintes parâmetros: python project.py [S] [C] [P] [A]  
 Se não informado um valor ele utiliza o padrão 2 3 25 5
 
 Onde:  

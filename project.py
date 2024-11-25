@@ -36,7 +36,7 @@ class DistPoint(threading.Thread):
     def run(self):
         while True:
             if self.queue.empty():
-                print(f"Centro {self.id} Vazio!")
+                print(f"Centro de distribuição {self.id} Vazio!")
                 break
             else:
                 time.sleep(0.1)
@@ -201,11 +201,11 @@ def packageSystem(S, C, P, A):
 
 if __name__ == "__main__":
     # Quantidade de Pontos
-    S = int(sys.argv[1]) if len(sys.argv) > 1 else 4
+    S = int(sys.argv[1]) if len(sys.argv) > 1 else 2
     # Quantidade de caminhões
-    C = int(sys.argv[2]) if len(sys.argv) > 2 else 2
+    C = int(sys.argv[2]) if len(sys.argv) > 2 else 3
     # Quantidade pacotes
-    P = int(sys.argv[3]) if len(sys.argv) > 3 else 10
+    P = int(sys.argv[3]) if len(sys.argv) > 3 else 25
     # Quantidade de pacotes por caminhão
     A = int(sys.argv[4]) if len(sys.argv) > 4 else 5
 

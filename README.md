@@ -17,14 +17,14 @@ Execute o script com os seguintes parâmetros: python project.py [S] [C] [P] [A]
 Se não informado um valor ele utiliza o padrão 2 3 25 5
 
 Onde:  
-S: Número de centros de sitribuição.  
+S: Número de centros de distribuição.  
 C: Número de caminhões.  
 P: Número de pacotes.  
 A: Capacidade máxima de pacotes por caminhão.  
 
 Exemplo: python project.py 5 3 50 10  
 Este comando cria:  
-5 centros de distribuição, 3 caminhões, 50 pacotes, capacidade máxima de 10 pacotes por caminhão.
+5 centros de distribuição, 3 caminhões, 50 pacotes e capacidade máxima de 10 pacotes por caminhão.
 
 Logs de Rastreamento
-Os log de cada pacote são salvos na pasta tracking criada automaticamento na execução. Cada arquivo contém o histórico completo do pacote.
+Os log de cada pacote são salvos na pasta tracking criada automaticamento na execução. Cada arquivo contém o histórico completo do pacote bem como os pontos que o caminhão carregando o pacote passaram.

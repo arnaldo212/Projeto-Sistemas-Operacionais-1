@@ -79,8 +79,7 @@ class Truck(threading.Thread):
             # Log das encomendas carregadas
             for p in self.cargo:
                 p.log_event(
-                    f"{time.strftime('%H:%M:%S')} - Encomenda {p.id}: Caminhao {
-                        self.id} passou no ponto {self.current_point.id}"
+                    f"{time.strftime('%H:%M:%S')} - Encomenda {p.id}: Caminhao {self.id} passou no ponto {self.current_point.id}"
                 )
 
             # Ve se tem algo para entregar no sistema geral, se não, se desliga
@@ -125,8 +124,7 @@ class Package(threading.Thread):
     def unload_if_reached(self, vehicle_id, current_point):
         if current_point == self.destination:
             self.log_event(
-                f"{time.strftime('%H:%M:%S')} - Encomenda {self.id}: Vai ser descarregada pelo caminhao {
-                    vehicle_id} no ponto {current_point.id}"
+                f"{time.strftime('%H:%M:%S')} - Encomenda {self.id}: Vai ser descarregada pelo caminhao {vehicle_id} no ponto {current_point.id}"
             )
             return True
         return False

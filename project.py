@@ -1,3 +1,12 @@
+#   Projeto de Sistemas Operacionais I 2024
+#       Prof. Caetano Mazzoni Ranieri
+#
+#   Integrantes:
+#       Arnaldo Martins de Godoy
+#       Caio Henrique Sidô dos Santos
+#
+
+
 import threading
 import random
 import time
@@ -6,7 +15,11 @@ import sys
 import os
 import shutil
 
+# Diretorio que sera salvo
 track_dir = "tracking"
+# Controle de total de pacotes no sistema
+pending_packages_lock = threading.Lock()
+pending_packages_count = None
 
 
 class DistPoint:
@@ -21,7 +34,7 @@ class DistPoint:
 
 
 class Truck(threading.Thread):
-    def __init__(self, id, points, capacity, pending_packages_lock, pending_packages_count):
+    def __init__(self, id, points, capacity):
         super().__init__()
         self.id = id
         self.points = points  # Todos os CD's que ele conhece
@@ -29,11 +42,10 @@ class Truck(threading.Thread):
         self.current_point = random.choice(points)  # Ponto Atual
         self.cargo = []
         self.visited = set()  # Para logica da lista não repetida
-        self.pending_packages_lock = pending_packages_lock
-        self.pending_packages_count = pending_packages_count  # Locks de pacotes pendentes
         self.running = True
 
     def run(self):
+        global pending_packages_lock, pending_packages_count
         while self.running:
             with self.current_point.lock:  # ! Garante que só um veiculo é atendido por vez
                 # Carregar ou descarregar encomendas
@@ -53,23 +65,27 @@ class Truck(threading.Thread):
                         self.cargo.remove(p)
                         p.log_event(
                             f"{time.strftime('%H:%M:%S')} - Encomenda {p.id}: Entregue pelo caminhao {self.id} no ponto {self.current_point.id}")
-                        with self.pending_packages_lock:
-                            self.pending_packages_count[0] -= 1
+                        with pending_packages_lock:  # Reduzir o numero total de encomendas no sistema com lock
+                            pending_packages_count -= 1
                     # Carregar oq for necessario
                     while not self.current_point.queue.empty() and len(self.cargo) < self.capacity:
                         package = self.current_point.queue.get()
+                        package.log_event(
+                            f"{time.strftime('%H:%M:%S')} - Encomenda {package.id}: Iniciando carregamento pelo caminhao {self.id} no ponto {self.current_point.id}")
+                        time.sleep(random.uniform(5, 10))
                         self.cargo.append(package)
                         package.log_event(
                             f"{time.strftime('%H:%M:%S')} - Encomenda {package.id}: Carregado pelo caminhao {self.id} no ponto {self.current_point.id}")
             # Log das encomendas carregadas
             for p in self.cargo:
                 p.log_event(
-                    f"{time.strftime('%H:%M:%S')} - Encomenda {p.id}: Caminhao {self.id} passou no ponto {self.current_point.id}"
+                    f"{time.strftime('%H:%M:%S')} - Encomenda {p.id}: Caminhao {
+                        self.id} passou no ponto {self.current_point.id}"
                 )
 
             # Ve se tem algo para entregar no sistema geral, se não, se desliga
-            with self.pending_packages_lock:
-                if self.pending_packages_count[0] == 0:
+            with pending_packages_lock:  # Lock para evitar um caso de o caminhão fazer uma viagem a mais
+                if pending_packages_count == 0:
                     self.running = False
                     print(
                         f"Caminhão {self.id}: Todas as encomendas foram entregues. Encerrando...")
@@ -97,7 +113,7 @@ class Package(threading.Thread):
         self.destination = destination
         self.log = []
         self.file_name = f"{track_dir}/package_{self.id}.ptt"
-        open(self.file_name, "w")
+        open(self.file_name, "w")  # Crua os arquivos
 
     def log_event(self, message):  # Vai salvando no arquivo conforme é atualizado
         print(message)
@@ -109,7 +125,8 @@ class Package(threading.Thread):
     def unload_if_reached(self, vehicle_id, current_point):
         if current_point == self.destination:
             self.log_event(
-                f"{time.strftime('%H:%M:%S')} - Encomenda {self.id}: Vai ser descarregada pelo caminhao {vehicle_id} no ponto {current_point.id}"
+                f"{time.strftime('%H:%M:%S')} - Encomenda {self.id}: Vai ser descarregada pelo caminhao {
+                    vehicle_id} no ponto {current_point.id}"
             )
             return True
         return False
@@ -127,15 +144,15 @@ def packageSystem(S, C, P, A):
     points = [DistPoint(i) for i in range(S)]
     print("CD's criados")
 
-    # Controle de pacotes pendentes
-    pending_packages_lock = threading.Lock()
-    pending_packages_count = [P]
-
     # Criar encomendas
     packages = []
     if os.path.exists(track_dir):
         shutil.rmtree(track_dir)
     os.mkdir(track_dir)
+
+    # Controle de total de pacotes no sistema
+    global pending_packages_count
+    pending_packages_count = P
 
     for i in range(P):
         origin, destination = random.sample(points, 2)
@@ -146,7 +163,7 @@ def packageSystem(S, C, P, A):
 
     # Criar caminhao vrum vrum
     trucks = [
-        Truck(i, points, A, pending_packages_lock, pending_packages_count)
+        Truck(i, points, A)
         for i in range(C)
     ]
     print("Caminhões criados")

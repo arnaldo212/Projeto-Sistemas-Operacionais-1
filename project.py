@@ -22,8 +22,9 @@ pending_packages_lock = threading.Lock()
 pending_packages_count = None
 
 
-class DistPoint:
+class DistPoint(threading.Thread):
     def __init__(self, id):
+        super().__init__()
         self.id = id
         self.queue = Queue()  # Fila de encomendas do CD
         self.lock = threading.Lock()
@@ -31,6 +32,14 @@ class DistPoint:
     def __str__(self):
         # DEbug ponto
         return f"Ponto {self.id} (Encomendas: {self.queue.qsize()})"
+    
+    def run(self):
+        while True:
+            if self.queue.empty():
+                print(f"Centro {self.id} Vazio!")
+                break
+            else:
+                time.sleep(0.1)
 
 
 class Truck(threading.Thread):
@@ -47,7 +56,7 @@ class Truck(threading.Thread):
     def run(self):
         global pending_packages_lock, pending_packages_count
         while self.running:
-            with self.current_point.lock:  # ! Garante que só um veiculo é atendido por vez
+            with self.current_point.lock:  #! Garante que só um veiculo é atendido por vez
                 # Carregar ou descarregar encomendas
                 if self.current_point.queue.empty() and not self.cargo:
                     print(
@@ -61,7 +70,7 @@ class Truck(threading.Thread):
 
                     # Entregar as necessarias
                     for p in to_unload:
-                        time.sleep(random.uniform(5, 10))
+                        time.sleep(random.uniform(1.5, 2.5))
                         self.cargo.remove(p)
                         p.log_event(
                             f"{time.strftime('%H:%M:%S')} - Encomenda {p.id}: Entregue pelo caminhao {self.id} no ponto {self.current_point.id}")
@@ -72,7 +81,7 @@ class Truck(threading.Thread):
                         package = self.current_point.queue.get()
                         package.log_event(
                             f"{time.strftime('%H:%M:%S')} - Encomenda {package.id}: Iniciando carregamento pelo caminhao {self.id} no ponto {self.current_point.id}")
-                        time.sleep(random.uniform(5, 10))
+                        time.sleep(random.uniform(1.5, 2.5))
                         self.cargo.append(package)
                         package.log_event(
                             f"{time.strftime('%H:%M:%S')} - Encomenda {package.id}: Carregado pelo caminhao {self.id} no ponto {self.current_point.id}")
@@ -91,17 +100,15 @@ class Truck(threading.Thread):
 
             # Basicamente uma lista que não se repete até voltar ao ponto inicial
             if self.running:
-                next_points = [p for p in self.points if p !=
-                               self.current_point and p not in self.visited]
+                next_points = [p for p in self.points if p != self.current_point and p not in self.visited]
                 if not next_points:
                     self.visited.clear()
-                    next_points = [
-                        p for p in self.points if p != self.current_point]
+                    next_points = [p for p in self.points if p != self.current_point]
                 self.current_point = random.choice(next_points)
                 self.visited.add(self.current_point)
                 print(
                     f"Caminhão {self.id}: Viajando para {self.current_point.id}")
-                time.sleep(random.uniform(5, 20))  # Tempo de viagem
+                time.sleep(random.uniform(2, 5))  # Tempo de viagem
 
 
 class Package(threading.Thread):
@@ -170,6 +177,10 @@ def packageSystem(S, C, P, A):
     for p in packages:
         p.start()
 
+    # Iniciar CD's
+    for p in points:
+        p.start()
+
     time.sleep(1)  # pra nn ficar feio o terminal
     print()
 
@@ -190,11 +201,11 @@ def packageSystem(S, C, P, A):
 
 if __name__ == "__main__":
     # Quantidade de Pontos
-    S = int(sys.argv[1]) if len(sys.argv) > 1 else 2
+    S = int(sys.argv[1]) if len(sys.argv) > 1 else 4
     # Quantidade de caminhões
-    C = int(sys.argv[2]) if len(sys.argv) > 2 else 3
+    C = int(sys.argv[2]) if len(sys.argv) > 2 else 2
     # Quantidade pacotes
-    P = int(sys.argv[3]) if len(sys.argv) > 3 else 25
+    P = int(sys.argv[3]) if len(sys.argv) > 3 else 10
     # Quantidade de pacotes por caminhão
     A = int(sys.argv[4]) if len(sys.argv) > 4 else 5
 
